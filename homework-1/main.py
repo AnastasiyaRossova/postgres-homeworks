@@ -33,7 +33,7 @@ def execute_sql_file(connection, file_name):
 def write_data(connection):
     try:
         cursor = connection.cursor()
-        with open('customers_data.csv', 'r') as f:
+        with open('north_data/customers_data.csv', 'r') as f:
             reader = csv.reader(f)
             next(reader)
             for row in reader:
@@ -41,7 +41,7 @@ def write_data(connection):
                     "INSERT INTO customers (customer_id, company_name, contact_name) VALUES (%s, %s, %s)",
                     (row[0], row[1], row[2])
                 )
-        with open('employees_data.csv', 'r') as f:
+        with open('north_data/employees_data.csv', 'r') as f:
             reader = csv.reader(f)
             next(reader)
             for row in reader:
@@ -49,7 +49,7 @@ def write_data(connection):
                     "INSERT INTO employees (employee_id,first_name,last_name,title,birth_date,notes) VALUES (%s, %s, %s, %s, %s, %s)",
                     (row[0], row[1], row[2], row[3], row[4], row[5])
                 )
-        with open('orders_data.csv', 'r') as f:
+        with open('north_data/orders_data.csv', 'r') as f:
             reader = csv.reader(f)
             next(reader)
             for row in reader:
@@ -66,6 +66,7 @@ def main():
     connection = create_connection()
     if connection:
         execute_sql_file(connection, "create_tables.sql")
+        write_data(connection)
         connection.close()
 
 
