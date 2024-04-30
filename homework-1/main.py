@@ -1,4 +1,6 @@
 """Скрипт для заполнения данными таблиц в БД Postgres."""
+import csv
+
 import psycopg2
 
 
@@ -24,6 +26,38 @@ def execute_sql_file(connection, file_name):
             cursor.execute(file.read())
         connection.commit()
         cursor.close()
+    except psycopg2.Error as e:
+        print(e)
+
+
+def write_data(connection):
+    try:
+        cursor = connection.cursor()
+        with open('customers_data.csv', 'r') as f:
+            reader = csv.reader(f)
+            next(reader)
+            for row in reader:
+                cursor.execute(
+                    "INSERT INTO customers (customer_id, company_name, contact_name) VALUES (%s, %s, %s)",
+                    (row[0], row[1], row[2])
+                )
+        with open('employees_data.csv', 'r') as f:
+            reader = csv.reader(f)
+            next(reader)
+            for row in reader:
+                cursor.execute(
+                    "INSERT INTO employees (employee_id,first_name,last_name,title,birth_date,notes) VALUES (%s, %s, %s, %s, %s, %s)",
+                    (row[0], row[1], row[2], row[3], row[4], row[5])
+                )
+        with open('orders_data.csv', 'r') as f:
+            reader = csv.reader(f)
+            next(reader)
+            for row in reader:
+                cursor.execute(
+                    "INSERT INTO orders (order_id,customer_id,employee_id,order_date,ship_city) VALUES (%s, %s, %s, %s, %s)",
+                    (row[0], row[1], row[2], row[3], row[4])
+                )
+        connection.commit()
     except psycopg2.Error as e:
         print(e)
 
